@@ -10,4 +10,5 @@
 - Micro service that connects with a mySQL db to POST and GET details related to /productapi/product
 - Uses spring boot for REST api implementation
 - Integrates couponservices API to update product pricing
+- Uses a data transfer object (DTO) for coupon as a @transient; no need to store in db, just use for coupon discount
 
