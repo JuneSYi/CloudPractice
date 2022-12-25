@@ -11,4 +11,8 @@
 - Uses spring boot for REST api implementation
 - Integrates couponservices API to update product pricing
 - Uses a data transfer object (DTO) for coupon as a @transient; no need to store in db, just use for coupon discount
-### 4. test - with adjustments
+### 4. vagrant-vms
+- Experimented with virtualization using virtualbox and vagrant
+- Started with manual setup of each virtual machine and transitioned to using vagrant as primary method to configure centos7 and ubuntu18 machines
+- Created bootstrap configuration in "VagrantFile" to automate development of WordPress and html templated sites
+- Finally, used vagrant to automate creation of multiple vms with bootstrap configurations
