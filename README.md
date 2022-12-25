@@ -25,3 +25,22 @@
 	5. MySQL - primary database to retain user information
 - Automated_provisioning - folder containing Vagrantfile that automates creation of all VMs and respective scripts for each of the needed services. Application.properties is the primary file for Tomcat to understand the connective properties between the services. 
 	- To deploy, execute "Vagrant Up" in the same directory
+### 6. containerintro
+	1. Used Vagrant to bootstrap a vm with docker
+		1. Practiced basic commands related to docker:
+			- systemctl status docker
+			- docker run, docker images, docker ps, docker ps -a, docker inspect <name>
+		2. Created an image directory to run pre-built images; file named Dockerfile
+		3. docker build -t <anynameforimage> . (. is location of file which is current loc)
+		4. docker images - check all images
+		5. docker run -d -P <imagename> (d runs it in background, P make it take host port)
+	2. Removed all docker files and images and reloaded Vagrant file to use docker-compose; docker-compose allows you to use a YAML file to define multiple containers
+		1. Created sub-directory for .yaml file(s)
+		2. used wget to pull pre-built image from docker hub
+		3. docker-compose up -d; builds and runs the image
+		4. docker ps to check; used ip addr show to find ip and tested adding on the correct port
+
+
+
+
+
