@@ -1,4 +1,4 @@
-#Specifics
+# Specifics
 #
 1. Created ELB SG with inbound traffic from only HTTPS
 2. Created application SG with inbound traffic from only the ELB SG port
