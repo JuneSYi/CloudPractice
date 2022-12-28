@@ -50,7 +50,15 @@
 	- URL will point to an ELB / ALB with a security group will be set to only allow HTTPS traffic
 	- ALB will route request to Tomcat instances set on EC2, managed by an auto-scaling group. The instances will be in a security group allowing only trying from the load balancer
 	- Tomcat instances will have access to backend services (backend server IP addresses) from the Route 53 private DNS zone
-	- RabbitMQ, MySQL, and NGINX will be in a separate security group running on EC2 servers
+	- RabbitMQ, MySQL, and memcached will be in a separate security group running on EC2 servers
+
+### 8. vprofileRefactor
+1. Replaced RabbitMQ, memcached, MySQL, with Amazon MQ, ElasticCache, and Amazon RDS respectively
+2. Used Elastic Beanstalk to create entire infrastructure for EC2s, ALB, ASG, S3, and CloudWatching for monitoring
+3. Incorporated CloudFront as primary CDN for global access
+4. Re-factored design as follows:
+
+	![Re-factored Design](/vprofileRefactor/cloudrefactor.drawio.png)
 
 
 

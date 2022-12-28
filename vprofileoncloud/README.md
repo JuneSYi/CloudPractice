@@ -1,29 +1,5 @@
-# Prerequisites
+#Specifics
 #
-- JDK 1.8 or later
-- Maven 3 or later
-- MySQL 5.6 or later
-
-# Technologies 
-- Spring MVC
-- Spring Security
-- Spring Data JPA
-- Maven
-- JSP
-- MySQL
-# Database
-Here,we used Mysql DB 
-MSQL DB Installation Steps for Linux ubuntu 14.04:
-- $ sudo apt-get update
-- $ sudo apt-get install mysql-server
-
-Then look for the file :
-- /src/main/resources/accountsdb
-- accountsdb.sql file is a mysql dump file.we have to import this dump to mysql db server
-- > mysql -u <user_name> -p accounts < accountsdb.sql
-
-
-Specifics
 1. Created ELB SG with inbound traffic from only HTTPS
 2. Created application SG with inbound traffic from only the ELB SG port
 3. Created backend SG with inbound traffic for specific applications (MySQL, custom ports determined during bootstrap script for RabbitMQ/memcached)
@@ -58,3 +34,32 @@ Specifics
 16. Test: https://<hostvaluefromstep#15>.domainname.com
 17. For auto-scaling, created image out of app ec2 instance
 18. Created a launch configuration (soon to be migrated to launch template)
+
+
+
+# Prerequisites
+#
+- JDK 1.8 or later
+- Maven 3 or later
+- MySQL 5.6 or later
+
+# Technologies 
+- Spring MVC
+- Spring Security
+- Spring Data JPA
+- Maven
+- JSP
+- MySQL
+# Database
+Here,we used Mysql DB 
+MSQL DB Installation Steps for Linux ubuntu 14.04:
+- $ sudo apt-get update
+- $ sudo apt-get install mysql-server
+
+Then look for the file :
+- /src/main/resources/accountsdb
+- accountsdb.sql file is a mysql dump file.we have to import this dump to mysql db server
+- > mysql -u <user_name> -p accounts < accountsdb.sql
+
+
+
