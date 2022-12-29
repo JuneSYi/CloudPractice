@@ -1,8 +1,10 @@
 # Devops tools testing
 ## Works
-### 1. Maven
-- Dependency management; pulls specific repositories
-- Using pom.xml file to configure details for project; use command "mvn clean install" in the same direcotry as the pom file to load
+### 1. Tools / Tech / Languages
+- Languages: Java, SQL, Python, Bash
+- Tools: Vim, AWS, Vagrant, Maven, VirtualBox, Apache Tomcat, RabbitMQ, Memcached, MySQL, NGINX, Docker, Git, Jenkins, Ansible, K8s, Terraform
+- IDE: PyCharm, Sublime
+- Others: Ubuntu OS, CentOS, RHEL
 ### 2. couponservices
 - Micro service that connects with a mySQL db to POST and GET details related to /couponapi/coupon/{code}
 - Uses spring boot for REST api implementation
