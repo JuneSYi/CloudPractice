@@ -4,7 +4,7 @@
 - Languages: Java, SQL, Python, Bash
 - Tools: Vim, AWS, Vagrant, Maven, VirtualBox, Apache Tomcat, RabbitMQ, Memcached, MySQL, NGINX, Docker, Git, Jenkins, Ansible, K8s, Terraform
 - IDE: PyCharm, Sublime
-- Others: Ubuntu OS, CentOS, RHEL
+- Others: Ubuntu OS, CentOS, RHEL, All graphics were made with draw.io
 ### 2. couponservices
 - Micro service that connects with a mySQL db to POST and GET details related to /couponapi/coupon/{code}
 - Uses spring boot for REST api implementation
