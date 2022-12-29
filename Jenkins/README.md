@@ -21,7 +21,7 @@
 	- generates reports in .xml, uploaded to a server
 6. Distributes the artifact to be deployed on server and versioned on NexusOSS Sonartype repo
 
-![Jenkins CI pipeline](jenkins.png)
+![Jenkins CI pipeline](Jenkins.png)
 
 ### Setup
 - Created unique instances for Jenkins, SonarQube, Nexus and used shell script from vprofile-project-ci-jenkins/userdata/
