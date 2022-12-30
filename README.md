@@ -62,6 +62,16 @@
 
 	![Re-factored Design](/vprofileRefactor/cloudrefactor.drawio.png)
 
+### 9. Jenkins
+- Continuous Integration pipeline
+	1. Dev uses git --> pushes to repo
+	2. Jenkins detects change and fetches code with a git tool
+	3. Code will build using tool like Maven
+	4. Unit Test will be conducted with tool like Maven
+	5. Code Analysis conducted by tool like SonarQube, checkstyle
+		- checks for vulnerabilities/bugs/best practices
+		- generates reports in .xml, uploaded to a server
+	6. Distributes the artifact to be deployed on server and versioned on NexusOSS Sonartype repo
 
-
+![Jenkins CI pipeline](/Jenkins/Jenkins.png)
 
