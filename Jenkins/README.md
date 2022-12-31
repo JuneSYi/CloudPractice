@@ -106,6 +106,7 @@
 5. Add a LB with new SG
 6. Installed Pipeline AWS Steps plugin on jenkins
 
-
+### Job Triggers
+- Popular triggers - Git Webhook, Poll SCM, Scheduled jobs, remote triggers, Build after other projects are built
 
 
