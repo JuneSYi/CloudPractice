@@ -20,6 +20,8 @@
 	- checks for vulnerabilities/bugs/best practices
 	- generates reports in .xml, uploaded to a server
 6. Distributes the artifact to be deployed on server and versioned on NexusOSS Sonartype repo
+7. Publish Docker images and store on Amazon ECR
+8. Use Amazon ECS to host the application/image
 
 ![Jenkins CI pipeline](Jenkins.png)
 
@@ -59,3 +61,51 @@
 	- go to projects, and linke the quality gate you just create
 	- once selected, you'll need webhooks to send the information
 		- http://<ip>:<port>/sonarqube-webhook/
+
+### Nexus
+- A software repository - your own repo for sotwares/pkgs
+	- e.g. for storing maven dependencies, apt, yum, nuget, npm, docker images...etc.
+- An automation stream can pull artifacts in the nexus repo and deploy to the new server
+- repository types:
+	- (hosted) for storing
+	- (proxy) for downloading dependencies
+	- (group) group both repos
+- Create a repository (maven2-hosted), artifacts from jenkins will be stored there; set up credentials in jenkins so it can talk to nexus
+- Bonus: Slack notification plugin
+	1. Create a separate channel; add Jenkins CI app to slack in their app settings; add created channel name
+		- store the token
+	2. Install slack plugin in Jenkins; go to configurations and add credentials w/token
+	3. added a post notification to Jenkinsfile that shows stats w/ a message
+		- currentBuild.currentResult with a color map assigned to it. the text will show green if success and red if failure
+		- message will show job name, build number, and a url link to the job
+
+### Docker Integration w/ Amazon ECR
+1. logged in as root user in Jenkins EC2; installed docker enginer using CLI frmo website
+2. adding jenkins id/user to dockers group
+	- usermod -aG docker jenkins
+3. Created IAM user with full access to ECS and ECR
+4. Created private Amazon ECR
+5. Added following plugs in Jenkins:
+	- AWS SDK::All
+	- Amazon ECR
+	- Docker Pipeline
+	- CloudBees Docker
+6. Add AWS credentials to global creds on Jenkins
+7. Update Jenkins file with appropriate info (mostly in environment tag)
+8. Build
+
+
+### Amazon ECS
+- After we containerized our application (creating a docker image), we need to host it somewhere. We can host it on docker...but managing the platform would be difficult due to lack of production features--this is where k8 shines
+	- Other options: EKS, AKS, GKE, Openshift, etc
+- Can also use Amazon ECS: Docker container hosting platform
+1. Create cluster on ECS
+2. Use task definitions to mention the image that needs to be fetched from ECR
+3. Run on fargate for now, added ECR image and URL
+4. Create a service to deploy on ECS clusters
+5. Add a LB with new SG
+6. Installed Pipeline AWS Steps plugin on jenkins
+
+
+
+
