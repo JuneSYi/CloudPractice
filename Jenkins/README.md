@@ -108,5 +108,39 @@
 
 ### Job Triggers
 - Popular triggers - Git Webhook, Poll SCM, Scheduled jobs, remote triggers, Build after other projects are built
+- get ssh key, put private in jenkins, public in git hub
+- script path - if in root repo, can just give the file name. e.g. Jenkinsfile
+- if you want to run the job everytime there is a git commit
+	1. grab the ip addr
+	2. add webhook on github; paste the URL with the port and add ""/github-webhook/
+	3. indicate what type of event you want the webhook to trigger for
+	4. Check jenkins security group that allows 8080 from anywhere
+	5. Configure the build job to allow github hook trigger for GITscm polling
+- Poll SCM
+	- Jenkins will regularly make checks to github for commits; you can add a regular cron job schedule
+	- With poll, you can customize so its on a schedule rather that event oriented
+- Build periodically, similar to Poll SCM
+- Remote triggers
+	- Job can be run from anywhere
+	1. Generate Job URL
+		1. Go to config settings for job
+		2. Check trigger builds remotely
+		3. give a token name
+		4. generate URL & save in a file
+	2. Generate Token for User
+		1. Click username for drop down
+		2. Configure --> API Token --> Generate
+		3. Copy token name and save username:tokenname in a file
+	3. Generate CRUMB
+		- Jenkins uses tokens known as crumbs to counter CSRF exploits
+		1. wget command in git bash is required for this
+		2. Once set, run this command in git bash:
 
+		wget -q --auth-no-challenge --user username --password password --output-document -
+'http://JENNKINS_IP:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)'
 
+		4. save the token to a file
+	4. Build Job from URL
+		1. With Jenkins job URL w/token, API Token, and Crumb, execute the following comming with the info replaced:
+
+		curl -I -X POST http://<username>:<APItoken> @<Jenkins_IP>:8080/job/<JOB_NAME>/build?token=<TOKENNAME> -H "Jenkins-Crumb:<CRUMB>"
