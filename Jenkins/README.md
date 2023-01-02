@@ -136,11 +136,51 @@
 		1. wget command in git bash is required for this
 		2. Once set, run this command in git bash:
 
-		wget -q --auth-no-challenge --user username --password password --output-document -
-'http://JENNKINS_IP:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)'
+		wget -q --auth-no-challenge --user <username>--password <password> --output-document -'http://<JENNKINS_IP>:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)'
 
 		4. save the token to a file
 	4. Build Job from URL
 		1. With Jenkins job URL w/token, API Token, and Crumb, execute the following comming with the info replaced:
 
 		curl -I -X POST http://<username>:<APItoken> @<Jenkins_IP>:8080/job/<JOB_NAME>/build?token=<TOKENNAME> -H "Jenkins-Crumb:<CRUMB>"
+	4.5. Can add a follow-up job (e.g. for testing or anything else) that triggers once the build job has run
+		1. Create the job
+		2. Under configurations, under Build Triggers, select "Build after other projects are builty"
+			- select the build job name
+
+### Primary/Secondary nodes
+- Popular use cases: 
+	- Load Distribution - in large orgs, myriad of jobs being upload, jenkins decides whether the executed job is primary or secondary
+	- Cross Platform Builds - executing build of other platforms (MAC OS, Windows)
+	- Software Testing - Execute testers test automation scripts from node
+- For secondary node experimentation
+	1. Created a new EC2 instance with ubuntu OS
+	2. Installed jdk11
+	3. adduser <name>
+	4. created a new directory under /opt/
+	5. gave the new directory a new user and group ownership using 'chown' for the newly created user
+	6. Because we're going to add this node using ssh, we're going to have to use password based login
+		- By default, password based login is disabled; vim /etc/ssh/sshd_config
+		- Change PasswordAuthentication to yes
+		- systemctl restart ssh (sshd for redhat)
+	7. Go to Jenkins --> Manage Jenkins --> Manage Nodes and Clouds --> New Node
+		- Remote root directory - Use the directory you created in step 4.
+		- Launch method - select SSH (best for linux)
+		- Host - IP address of the newly created EC2 instance, use private IP and update SG inbound rule allow from Jenkins SG, port 22
+		- Credentials - username will be the user you created in the instance
+	8. Test by creating another job and running it, check logs to see which node it runs on
+		- big part will be what you label the Usage under configurations in step 7 for Nodes.
+
+### Authentication & Authorization
+- Auth Methods - User Login, Jenkins own database, LDAP integration
+- Authorization/permissions - Admin, Read, Jobs, Credentials, Plugins, etc
+
+- In Jenkins, go to Manage Jenkins (configurations) --> Configure Global Security
+	o Security Realm - different auth methods
+	o Authorization - various options
+		- Matrix-based Security and Project-based Matrix Authorization Strategy are probably the two best
+- Popular plugin - Role Based Authorization Strategy
+	o adds an option under Authorization for managing roles with different permissions
+
+
+
