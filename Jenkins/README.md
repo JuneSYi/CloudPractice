@@ -36,7 +36,8 @@
 	- Pipeline Utility Steps - Utility steps for pipeline jobs.
 
 ### Using JenkinsFile (Declarative pipeline - Pipeline as a Code)
-- Followed standard formatting for Jenkinsfile (located in this directory)
+###### located ./Jenkinsfile
+- Followed standard formatting for Jenkinsfile
 - developed stages with each stage being a specific part of the build
 - ran into an error with downloading jdk from oracle so used "sudo apt-get --yes install openjdk-8-jdk"
 	- Jenkins requires sudo permissions for this action as the user
@@ -48,6 +49,7 @@
 - This took me 6 hours to figure out, made me want to puke
 
 ### Code Analysis
+###### ./JenkinsfileWSonarQube
 - After Fetch Code --> Build --> Unit Test; we now move to Code Analysis
 - We use SonarQube
 - Using SonarQube plugin from setup, we add installation with a name
@@ -63,6 +65,7 @@
 		- http://<ip>:<port>/sonarqube-webhook/
 
 ### Nexus
+###### ./JenkinsfileWNexusArtifact
 - A software repository - your own repo for sotwares/pkgs
 	- e.g. for storing maven dependencies, apt, yum, nuget, npm, docker images...etc.
 - An automation stream can pull artifacts in the nexus repo and deploy to the new server
@@ -80,6 +83,7 @@
 		- message will show job name, build number, and a url link to the job
 
 ### Docker Integration w/ Amazon ECR
+###### ./JenkinsfileWDocker
 1. logged in as root user in Jenkins EC2; installed docker enginer using CLI frmo website
 2. adding jenkins id/user to dockers group
 	- usermod -aG docker jenkins
@@ -96,6 +100,7 @@
 
 
 ### Amazon ECS
+###### ./JenkinsfileWECS
 - After we containerized our application (creating a docker image), we need to host it somewhere. We can host it on docker...but managing the platform would be difficult due to lack of production features--this is where k8 shines
 	- Other options: EKS, AKS, GKE, Openshift, etc
 - Can also use Amazon ECS: Docker container hosting platform
@@ -107,6 +112,7 @@
 6. Installed Pipeline AWS Steps plugin on jenkins
 
 ### Job Triggers
+###### ./JenkinsfileWJobTrigger
 - Popular triggers - Git Webhook, Poll SCM, Scheduled jobs, remote triggers, Build after other projects are built
 - get ssh key, put private in jenkins, public in git hub
 - script path - if in root repo, can just give the file name. e.g. Jenkinsfile
