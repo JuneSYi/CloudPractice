@@ -3,10 +3,10 @@
 ### Notes
 - Acquired by Red Hat
 - Use Cases: 
-	o Automation
-	o Change Management - production server changes
-	o Provisioning
-	o Orchestration - large scale automation, integrating with other cloud tools like jenkins
+	- Automation
+	- Change Management - production server changes
+	- Provisioning
+	- Orchestration - large scale automation, integrating with other cloud tools like jenkins
 - No agents of any sort required, uses API/WINRM/SSH
 - YAML; no databases
 - Simple setup, a single python library; no residual software
@@ -28,11 +28,11 @@
 	- i to indicate inventory file followed by name
 	- m to indicate what module we want to use followed by module name (ping)
 	- ping - tries to connect to host, verify a usable python (/usr/bin/python), returns a pong on success through a .json file
-		o can use * (need to surround with ') or all
+		- can use * (need to surround with ') or all
 4. Removing host-key checking
 	- WHY? Using host-key checking (the response you have to say yes to after you send a ping) adds an interactive step that we don't want if we're looking to automate
 	- sudo vim /etc/ansible/ansible.cfg
-		o uncomment host_key_checking = False
+		- uncomment host_key_checking = False
 5. Adding groups
 	- using square brackets in inventory file; can categories each instance within a group
 	- e.g. [<groupName>]
@@ -47,14 +47,14 @@
 ### Ad Hoc commands
 - ad-hoc commands that deal with configuration management are idempotent; after the first application, same execution won't apply again
 - yum module
-	o need to use -a for attributes
-	o need to use sudo if the user doesn't have root privileges (--become)
-	o e.g. ansible -i <inventoryName> -m yum -a "name=<package you want to install> state=<installed>" <instanceName> --become
+	- need to use -a for attributes
+	- need to use sudo if the user doesn't have root privileges (--become)
+	- e.g. ansible -i <inventoryName> -m yum -a "name=<package you want to install> state=<installed>" <instanceName> --become
 - service module
-	o controls services (e.g. can start/shutdown)
-	o e.g. "... -m service -a "name=<package> enabled=<boolean> state=<started>" ..."
+	- controls services (e.g. can start/shutdown)
+	- e.g. "... -m service -a "name=<package> enabled=<boolean> state=<started>" ..."
 - copy module
-	o module that copies the file that you identify
+	- module that copies the file that you identify
 
 ### Playbook
 ###### ./web_db.yaml
@@ -67,8 +67,8 @@
 ###### ./db.yaml
 - Details of a package: ansible-doc <package>
 - Sometimes you'll find errors in executing a module due to missing dependencies, in these cases you'll need to search in the instance to see if it exists
-	o e.g. if a package is needed in an centos OS, you can search using "yum search" and "grep -i <name>" to see if it exists
-	o once found, we'll have to add remotely through the playbook
+	- e.g. if a package is needed in an centos OS, you can search using "yum search" and "grep -i <name>" to see if it exists
+	- once found, we'll have to add remotely through the playbook
 
 ### Ansible Configuration
 - priority of settings: 
@@ -77,13 +77,66 @@
 	3. ~/.ansible.cfg (in the home directory)
 	4. /etc/ansible/ansible.cfg (global config file)
 - ./ansible.cfg (default file)
-	o basic default values are shown in the beginning to show paths/location
-	o forks - defines parallel execution of how many machine it will simultaneously execute at a time
-	o no default log file but you can uncomment it in config (line 113) to create one
-	o privilege_escalation (line 342), escalated privilege for all the playbooks in the selected directory (global/home/current)
-	o configuration file in docs.ansible site has details for every setting
-- ./ansibleCustom.cfg (customized file)
-	o log_path = <location of where you want the log file>
+	- basic default values are shown in the beginning to show paths/location
+	- forks - defines parallel execution of how many machine it will simultaneously execute at a time
+	- no default log file but you can uncomment it in config (line 113) to create one
+	- privilege_escalation (line 342), escalated privilege for all the playbooks in the selected directory (global/home/current)
+	- configuration file in docs.ansible site has details for every setting
+- ./ansibleCustom.cfg (name customized to separate from other example, in real-time, the file name will have to be ansible.cfg)
+	- log_path = <location of where you want the log file>
 		- keep in mind, if you choose a path like /var/log/ansible.log, consider who the user would be executing this .cfg file as
 		- e.g. if a normal user on ubuntu is the standard user, then they won't have access to this directory unless they use root
 		- you'll have to create the ansible.log first, give the user, who is executing the playbook, ownership, then access the file
+			- e.g.  $ sudo touch /var/log/ansible.og
+			 		$ sudo chown ubuntu.ubuntu /var/log/ansible.log
+			 		$ ansible-playbook <.yaml file> 
+			 			- (will be able to execute ansibleCustom.cfg without any errors now)
+		- for helping with debug 
+			- ansible-playbook <.yaml> -vv
+			- more details: -vvv
+			- last level: -vvvv
+			- choose accordingly based on what you want to know
+
+### Variables, Host Variables, Debug, Groups
+###### ./variables.yaml
+- Variables:
+	- Can define variables using vars:
+	- for each variable, they can be used throughout the .yaml file with (using double quotes): "{{varName}}"
+- Debug:
+	- for debug, the module helps print statements during execution
+	- if its a long json format, you can access specific variables you want printed instead of a wall of texts
+		- e.g. when you use ansible -m setup <variable>, you get a huge list of information 
+			- you can browse through and see that you want to pull ansible_memory_free
+			- even that list is pretty detailed and there's a lot of information you may not want
+			- to narrow down even more, you can use debug and have the var as ansible_memory_mb.real.free
+				- this will give you a one liner of the available free real memory
+				- if it's a list, can also use [#] to access specific index in a list
+- Host Variables:
+- Groups: (./groupsExample/db.yaml)
+	- ansible checks for "group_vars/all"
+	- need to create the directory and create the file, in the file you add variable names and its values
+	- if variables aren't defined within the .yaml file, ansible will check for group_vars/all file to pull definitions
+- Precedence of variables: (./vars_precedence.yaml)
+	- you can use "register" to store the output of a task into a variable that we define
+	- can print the variables using debug; will return a json, can specify what key:value we want to see by using .<key>
+	- if you have group variables in the group_vars directory, ansible will take precedence of the groups over specific user variables
+	- highest priority goes to host_vars, if that directory exists, ansible will prioritize there first before group_vars
+	- priority: playbook --> host_vars --> group_vars/grpname --> group_Vars/all
+	- one higher priority is using CLI: e.g. ansible-playbook -e USRNM=cliuser -e COMM=cli vars_precedence.yaml
+
+### Fact Variables
+- fact variables are runtime variables that get generated when setup module gets executed; few examples used are OS, # of CPU corse, Kernel version, etc
+- you see this every time you run the playbook "TASK [Gathering Facts]"
+	- uses a module called "setup"
+		- can execute this "setup" module thru adhoc: ansible -m setup <variable>
+		- uses OHAI tool to return detailed system information in json format
+- can disable if you want: gather_facts: False
+	- improves execution time
+
+### Provisioning Servers: Decision Making, Loops
+##### NTP service on multi OS, User & Groups, Config files, Decision Making, Loops, tepmlates, handlers, ansible roles
+- I need to solve this "why do we need to update the package manager cache for ubuntu" before moving on
+
+
+
+

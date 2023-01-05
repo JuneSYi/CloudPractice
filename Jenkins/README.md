@@ -182,11 +182,11 @@
 - Authorization/permissions - Admin, Read, Jobs, Credentials, Plugins, etc
 
 - In Jenkins, go to Manage Jenkins (configurations) --> Configure Global Security
-	o Security Realm - different auth methods
-	o Authorization - various options
+	- Security Realm - different auth methods
+	- Authorization - various options
 		- Matrix-based Security and Project-based Matrix Authorization Strategy are probably the two best
 - Popular plugin - Role Based Authorization Strategy
-	o adds an option under Authorization for managing roles with different permissions
+	- adds an option under Authorization for managing roles with different permissions
 
 
 
