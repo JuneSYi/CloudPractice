@@ -134,9 +134,13 @@
 	- improves execution time
 
 ### Provisioning Servers: Decision Making, Loops
-##### NTP service on multi OS, User & Groups, Config files, Decision Making, Loops, tepmlates, handlers, ansible roles
-- I need to solve this "why do we need to update the package manager cache for ubuntu" before moving on
-
-
+##### NTP service on multi OS, User & Groups, Config files, Decision Making, Loops, templates, handlers, ansible roles
+- ./NTPprovisioning.yaml
+	- using when statements to install NTP service on multiple OSs
+	- fixed some bug where ntp installation on ubuntu would fail due to .cache.py not being updated. used a update_cache module to fix
+- ./loopProvisioning.yaml
+	- using loops to install multiple and various packages. Use "{{item}}" for ansible to know what to replace each loop pkg
+	- also used loops to create a list of users with a group attached to each user
+	- created a file within ./group_vars/ directory called all so ansible will automatically search there when variables are called. Created a list of users within the variable usernames and incorporated it in loopProvisioning.yaml for test purposes
 
 
