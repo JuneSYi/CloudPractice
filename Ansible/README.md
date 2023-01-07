@@ -134,7 +134,7 @@
 	- improves execution time
 
 ### Provisioning Servers: Decision Making, Loops
-##### NTP service on multi OS, User & Groups, Config files, Decision Making, Loops, templates, handlers, ansible roles
+##### NTP service on multi OS, User & Groups, Config files, Decision Making
 - ./NTPprovisioning.yaml
 	- using when statements to install NTP service on multiple OSs
 	- fixed some bug where ntp installation on ubuntu would fail due to .cache.py not being updated. used a update_cache module to fix
@@ -143,4 +143,18 @@
 	- also used loops to create a list of users with a group attached to each user
 	- created a file within ./group_vars/ directory called all so ansible will automatically search there when variables are called. Created a list of users within the variable usernames and incorporated it in loopProvisioning.yaml for test purposes
 
-
+### Loops, templates, handlers, ansible roles
+##### ./templateprovisioning.yaml
+- Banner file - when you log into the linux OS, it prints the content of the banner file /etc/motd
+	- you can use copy module to output a text for users that log in by copying the text into /etc/motd
+- Templates - with template module, you can have dynamic files. template module will read the files, see if there's dynamic content, and replace it with actual content and then push it. 
+	- To demo this, we created ./templateprovisioning.yaml that pulls from 
+	/templates/ directory
+		- within /templates/ directory are 2 .conf files converted to an ansible readable .j2 file
+		- the 2 .conf files are NTP files we pulled from 2 different web servers (one CentOS and one Ubuntu) where we replaced the server origin with US based servers to have that specific modification (servers were found by just googling ntp servers)
+		- these original .conf files were found within their respective instances under 
+		/etc/ntp.conf
+		- through this modification, ansible will dynamically overwrite these files when we run the playbook
+	- in /templates/ntp_debian.conf.j2 from lines 21-24, we can see a demonstration of using jinja2 format to add variables
+		- these variables are represented in the 
+		group_vars/all file
