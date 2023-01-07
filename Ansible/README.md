@@ -134,7 +134,7 @@
 	- improves execution time
 
 ### Provisioning Servers: Decision Making, Loops
-##### NTP service on multi OS, User & Groups, Config files, Decision Making
+###### NTP service on multi OS, User & Groups, Config files, Decision Making
 - ./NTPprovisioning.yaml
 	- using when statements to install NTP service on multiple OSs
 	- fixed some bug where ntp installation on ubuntu would fail due to .cache.py not being updated. used a update_cache module to fix
@@ -144,7 +144,7 @@
 	- created a file within ./group_vars/ directory called all so ansible will automatically search there when variables are called. Created a list of users within the variable usernames and incorporated it in loopProvisioning.yaml for test purposes
 
 ### Loops, templates, handlers, ansible roles
-##### ./templateprovisioning.yaml
+###### ./templateprovisioning.yaml
 - Banner file - when you log into the linux OS, it prints the content of the banner file /etc/motd
 	- you can use copy module to output a text for users that log in by copying the text into /etc/motd
 - Templates - with template module, you can have dynamic files. template module will read the files, see if there's dynamic content, and replace it with actual content and then push it. 
@@ -158,3 +158,32 @@
 	- in /templates/ntp_debian.conf.j2 from lines 21-24, we can see a demonstration of using jinja2 format to add variables
 		- these variables are represented in the 
 		group_vars/all file
+- Handlers - running operations only upon change
+	- if changed value is true, we can signal handlers to execute a task
+	- handlers get executed at the end of the playbook
+	- needs to fall under the initial tasks: column
+
+### Ansible Roles
+- example roles: MySQL, Tomcat, Build Server, Apache, Wordpress, etc
+- first create a directory /roles/
+	- run command: ansible-galaxy init <roleName> 
+- can allocate the separation of tasks into different default sections that ansible-galaxy creates: defaults, files, handlers, meta, tasks, tests, vars
+- not recommended for small projects but it helps for organization on large-scale work
+- for the main .yaml file, you can replace everything and just leave a tasks for role: with a list of the roles you want executed
+###### https://galaxy.ansible.com
+- visit the link above to find pre-defined roles that sets up specifically what you're looking to implement in the playbook
+
+### Implementation with AWS
+###### ./test-aws.yml
+1. created a role specific for ansible with programmatic access keys
+2. downloaded the key and instead of exporting it the instance, i inserted it into .bashrc file so it remains permanent after i exit the instance
+3. built out test-aws.yml using the following modules found on docs.ansible.com
+	- ec2_key -allows key-pair creation
+		- required boto3 which in turn, required pip so installed both packages in the terminal
+	- register - allows ansible to capture the output value and store it in a variable
+	- debug - we can see the output of the registered key variable
+	- copy - we use copy module to save the contents of the registered key to a local destination path
+		- we added a when condition to only execute <copy> when there's a new key generated (<registeredKeyVariable>.changed == True); otherwise the json file output from ec2_key won't include <registeredKeyVariable>.key.private_key
+	- ec2 - ec2 instance creation, added various details of parameters for instance
+		- one key thing we added was an exact_count with instance_tags and count_tag; this condition allows for idempotency so that duplicates aren't created
+		- when an instance is created, ansible adds a count to it, it'll check count_tag once, if they exist, it'll not create; if they don't exist, they'll create instance_tags

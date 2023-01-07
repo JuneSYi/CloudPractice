@@ -42,6 +42,13 @@
 
 ![Jenkins CI pipeline](/Jenkins/Jenkins.png)
 
+### Ansible
+- Practiced setting up various .yaml files to run ansible-playbook
+- learned basic modules to automate tasks/bootstrapping new environments
+- Experimented with users and groups, templates for dynamic files, handlers for dependencies,
+- Use of roles for complex projects and organization of large projects
+- finished with /Ansible/test-aws.yml to automate setting up key-value pair and launching an ec2 instance
+
 ## Not As Interesting, But Fundamentals I Practiced Before Working With The Good Stuff:
 
 ### vagrant-vms
