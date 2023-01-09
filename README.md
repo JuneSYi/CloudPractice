@@ -49,6 +49,18 @@
 - Use of roles for complex projects and organization of large projects
 - finished with /Ansible/test-aws.yml to automate setting up key-value pair and launching an ec2 instance
 
+### VPC Architecture
+
+![VPC Design](/vpcArchitecture/vpcDesign.png)
+
+- Set up a VPC with 2 public and 2 private subnets
+- Created an Internet Gateway for outside traffic to and from the VPC
+- Created a route table to direct traffic between the subnets as well as to the Internet Gateway
+- Created a NAT gateway for the route tables in the private subnets to route ONLY outbound traffic
+- Created an EC2 instance to represent the web server, resides in the private subnets
+- Created a Bastion Host that has SSH access to the EC2 web server
+- Created a Load Balancer to direct incoming traffice to the EC2 web servers
+
 ## Not As Interesting, But Fundamentals I Practiced Before Working With The Good Stuff:
 
 ### vagrant-vms
