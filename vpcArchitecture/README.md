@@ -50,6 +50,7 @@
 	- resides in created vpc
 	- resides on both the 2 public subnets
 14. Selected ec2 web server security group and allowed inbound traffic from port 80 coming from the Load Balancer security group
+
 Bonus:
 - VPC Peering
 	- Create a VPC in a completely different region

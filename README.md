@@ -1,10 +1,10 @@
 # Devops tools testing
 ## Works
 ### Tools / Tech / Languages
-- Languages: Java, SQL, Python, Bash
+- Languages: Bash
 - Tools: Vim, AWS, Vagrant, Maven, VirtualBox, Apache Tomcat, RabbitMQ, Memcached, MySQL, NGINX, Docker, Git, Jenkins, Ansible, K8s, Terraform
-- IDE: PyCharm, Sublime
-- Others: Ubuntu OS, CentOS, RHEL, All graphics were made with draw.io
+- Others: Ubuntu OS, CentOS, RHEL, 
+- All graphics were made with draw.io
 
 ## Main Projects:
 ### vprofileoncloud
