@@ -5,10 +5,79 @@
 - main strength are its images
 - A standard unit of software; package software into standardized units for development, shipment, and deployment
 
+### Building images
+- 
+
+### Docker Volumes
+- Containers are volatile, when you make changes, you have to reboot the image and it restarts. We have volumes for containers where data needs to persist--e.g. databases
+- Volumes is a wrapper in the docker volumes directory that you can attach to your container; it'll remain safe on your host machine (/var/lib/docker/volumes)
+- Bind Mounts is similar to vagrant sync directory, you can take any directory from host machine and map it to a container directory; you can make changes from your host directory and it'll be reflected in your container directory
+- Commands
+	- docker run --name vprodb -d -e MYSQL_ROOT_PASSWORD=123 -p 3030:3306 -v /home/ubuntu/vprodbdata:/var/lib/mysql mysql:5.7
+		- name: vprodb
+		- -d for running in background
+		- -e to set a variable thats required or it wont run (can see whats required in the documentation for the image)
+		- -p to set a port
+			- we used docker inspect mysql:5.7 to read the json file where it show what port mysql runs on (3306)
+			- -v lets docker manage the storage of db data by writing the db files to disk on host system. before we ran this command we used mkdir to created a filepath
+		- mysql:5.7 the image we're going to run
+	- docker exec -it vprodb /bin/bash
+		- lets us log into the container to run commands
+	- docker volume
+		- lets you see all the different commands you can use
+	- docker volume create <volumeYouWantToName>
+		- creates a volume for you to store
+	- docker run --name vprodb -d -e MYSQL_ROOT_PASSWORD=123 -p 3030:3306 -v <volumeYouNamedEarlier>:/var/lib/mysql mysql:5.7
+		- simpler way to direct container data to a pre-set volume
+		- volume is stored in /var/lib/docker/volumes/<volumeYouNamedEarlier>/
+	- docker inspect <container>
+		- gives you specific information on the container you started
+	- mysql -h <ipOfContainer> -u root -p<password>
+		- gets into mysql container running and execute mysql commands
 
 
+### Docker Image + Logs
+- A stopped container like vm image
+- container runs from images; you can't remove the image when its running
+- images in registries are called repositories
+- Registries:
+	- Cloud based - dockerhub, GCR (Google), ECR (Amazon)
+	- Local - Nexus 3+, Jfrog Artifactor, DTR
+- Can run multiple containers on an image
+- commands i used:
+	- sudo usermod -aG docker ubuntu
+		- provide ubuntu (username) user sudo access for docker specific commands
+		- alternate way is: sudo vim /etc/group
+			- then add user name to application you want them to have sudo access
+	- docker images
+		- see all images that have been pulled
+	- docker run <imagename>
+		- run the image on a container
+	- docker run --name <whatevernameyouwanttocallit> -p 7090:80 -d <imagename>
+		- runs docker image with -p to specify a local port and -d to run it in the background
+			- images that run constantly like web servers will pull you out of bash and you'll have to use ctrl+c to exit which will also stop the image running
+	- docker inspect <imagename>
+		- can inspect the image in json format
+	- docker run -d -P nginx
+		- will run the image on a localhost automatically
+	- docker run -d -P <imageyouhaven'tpulledyet>
+		- if you don't have the image, docker will search dockerhub and download the image for you
+	- docker logs
+		- see the output of logs from when docker starts the images you run
+	- docker ps
+		- see all running containers
+	- docker ps -a
+		- see all containers you have ran that are live and dead
+	- something neat, if you run an application image like ubuntu, it's not persistent like nginx, so you can use commands like "docker exec -it <imagename> /bin/bash" to start bash and then run commands in that image while its running
+	- docker rmi
+		- removes images
+	- docker rm
+		- removes containers
+	- /var/lib/docker/
+		- contains docker files
 
-
+### Docker Setup
+- All on the website; very simple - https://docs.docker.com/get-docker/
 
 #### Random Notes
 - Isolating and hosting infrastructure results in high CapEx and OpEx due to cost of VMs
