@@ -10,11 +10,11 @@
 ![Docker Design](ContainerizingProject.png)
 
 ###### ./ContainerizingProject/
-- We replicated the same setup for ../vprofile-project/ but used Docker for provisioning
+- I replicated the same setup for ../vprofile-project/ but used Docker for provisioning
 ###### ./ContainerizingProject/app/Dockerfile
-- RUN - remove all files from tomcat webaps
+- RUN - remove all files from tomcat webapps
 - COPY - copy the war file into the tomcat webapps folder as ROOT.war
-- EXPOSE - we expose the port that tomcat will run on
+- EXPOSE - I expose the port that tomcat will run on
 - CMD - running catalina.sh will run the tomcat process, it's pre-defined in the tomcat image
 - WORKDIR - setting the directory to tomcat subdirectory
 - VOLUME - attaching any local volume to my host machine directory
@@ -22,7 +22,7 @@
 - ENV - adding an environment variable for required password and db account name
 - ADD - adding the premade sql file and pushing it into a specific location
 ###### ./ContainerizingProject/web/Dockerfile
-- RUN && COPY - we remove the default config file and copy our own built configuration file in the same location
+- RUN && COPY - I removed the default config file and copy our own built configuration file in the same location
 	- For configuration file nginvproapp.conf, we have the server listen for traffic on port 80 and forward the requests to and upstream server on port 8080, where our tomcat server will be running
 1. Once set, ran maven install on a pom.xml file to get the vprofile-v2.war and set the file within /app/
 2. ran "docker build -t juntheyi/tomcat:V1 ."
@@ -33,22 +33,22 @@
 5. Created docker-compose.yml file with some notes on following settings
 	- name of containers falling under services: need to reflect as we had in applications.properties file for db that we used for our pom.xml
 	- for nginx file, needs to reflect same as the customized Dockerfile for web
-	- for db exposed port, we use docker inspect <imageName> to see which port is exposed in the image
-	- for volumes we mapped the mysql db to vprodbdata to not lose our data
+	- for db exposed port, I used docker inspect <imageName> to see which port is exposed in the image
+	- for volumes I mapped the mysql db to vprodbdata to not lose our data
 6. docker-compose up
 7. pushed all customized images to dockerhub repo
 
 ### Multi Stage Dockerfile
 ###### ./multistage/Dockerfile
-- In the Containerizing Project section, we had to manually use maven to generate the artifact for tomcat
+- In the Containerizing Project section, I had to manually use maven to generate the artifact for tomcat
 	- Can further automate by adding more RUN commands:
 		- RUN apt update && apt install <jdk> && apt install <maven> -y
 		- RUN git clone -b <branch> <gitURL> && cd <directory> && mvn install
 	- problem with this:
-		- tomcat image will also contain the repo that we downloaded, mvn install will include tons of dependencies, the target directory will contain much more than the artifact (which is the only file we need)
-- the multistage dockerfile lets us build out an image, pull a specific file from that image and then build a separate image that we want to use with that file.
-	- AS - we give our image a specific name
-	- COPY - we use --from=<imageName> and pull a file from there
+		- tomcat image will also contain the repo that we downloaded, mvn install will include tons of dependencies, the target directory will contain much more than the artifact (which is the only file I need)
+- the multistage dockerfile lets us build out an image, pull a specific file from that image and then build a separate image that I wanted to use with that file.
+	- AS - I gave our image a specific name
+	- COPY - I used --from=<imageName> and pull a file from there
 
 ### Docker Compose
 ###### ./Dockertest/
@@ -58,8 +58,8 @@
 ###### ./Dockertest/Dockerfile
 - uses python alpine image from docker hub
 - WORKDIR /code - where all files will be placed for later cmds to come
-- COPY - we copy the local requirements.txt file into the container (in WORKDIR /code)
-- we run pip install -r requirements.txt
+- COPY - I coped the local requirements.txt file into the container (in WORKDIR /code)
+- I ran pip install -r requirements.txt
 - COPY . . - is copying everything in the current directory into the container at the specified WORKDIR
 ###### ./Dockertest/docker-compose.yml
 - file is self-explanatory, use https://docs.docker.com/compose/gettingstarted/ if you'd like more specific details

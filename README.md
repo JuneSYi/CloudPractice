@@ -7,11 +7,11 @@
 - All graphics were made with draw.io
 
 ## Main Projects:
-### vprofileoncloud
+### Cloud-1.0
 1. Used the same design developed in /vprofile-project/ and produced replica with cloud applications
 2. Cloud Architecture as follows:
 
-	![Cloud Design](/vprofileoncloud/vprofileoncloud.png)
+	![Cloud Design](/Cloud-1.0/vprofileoncloud.png)
 
 	- User access website by using a URL from AWS a DNS in Route 53. The URL will be pointing to an endpoint
 	- URL will point to an ELB / ALB with a security group will be set to only allow HTTPS traffic
@@ -19,13 +19,13 @@
 	- Tomcat instances will have access to backend services (backend server IP addresses) from the Route 53 private DNS zone
 	- RabbitMQ, MySQL, and memcached will be in a separate security group running on EC2 servers
 
-### vprofileRefactor
+### Cloud-2.0
 1. Replaced RabbitMQ, memcached, MySQL, with Amazon MQ, ElasticCache, and Amazon RDS respectively
 2. Used Elastic Beanstalk to create entire infrastructure for EC2s, ALB, ASG, S3, and CloudWatching for monitoring
 3. Incorporated CloudFront as primary CDN for global access
 4. Re-factored design as follows:
 
-	![Re-factored Design](/vprofileRefactor/cloudrefactor.drawio.png)
+	![Re-factored Design](/Cloud-2.0/cloudrefactor.drawio.png)
 
 ### Jenkins
 - Continuous Integration pipeline
@@ -61,9 +61,10 @@
 - Created a Bastion Host that has SSH access to the EC2 web server
 - Created a Load Balancer to direct incoming traffice to the EC2 web servers
 
-### Containerizing vprofileoncloud
+### Docker
 
 ![Container vprofile](/Docker/ContainerizingProject.png)
+- I replicated the same setup for Cloud-1.0 but used Docker for provisioning
 - Using DockerHub as source of documentation, I customized Dockerfiles for Tomcat, MySQL, and NGINX
 	- For Tomcat - ensured Docker built an image using a prepared .war file to run as our application page at a specified port; included a volume for persistent data
 	- For MySQL - customized a docker image with personalized password and added pre-set SQL commands for creating the table
