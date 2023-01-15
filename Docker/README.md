@@ -7,7 +7,7 @@
 
 ### Containerizing project
 
-![Docker Design](DockerfileImage.png)
+![Docker Design](ContainerizingProject.png)
 
 ###### ./ContainerizingProject/
 - We replicated the same setup for ../vprofile-project/ but used Docker for provisioning
