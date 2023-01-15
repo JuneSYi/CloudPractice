@@ -38,6 +38,17 @@
 6. docker-compose up
 7. pushed all customized images to dockerhub repo
 
+### Multi Stage Dockerfile
+###### ./multistage/Dockerfile
+- In the Containerizing Project section, we had to manually use maven to generate the artifact for tomcat
+	- Can further automate by adding more RUN commands:
+		- RUN apt update && apt install <jdk> && apt install <maven> -y
+		- RUN git clone -b <branch> <gitURL> && cd <directory> && mvn install
+	- problem with this:
+		- tomcat image will also contain the repo that we downloaded, mvn install will include tons of dependencies, the target directory will contain much more than the artifact (which is the only file we need)
+- the multistage dockerfile lets us build out an image, pull a specific file from that image and then build a separate image that we want to use with that file.
+	- AS - we give our image a specific name
+	- COPY - we use --from=<imageName> and pull a file from there
 
 ### Docker Compose
 ###### ./Dockertest/

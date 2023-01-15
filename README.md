@@ -61,6 +61,16 @@
 - Created a Bastion Host that has SSH access to the EC2 web server
 - Created a Load Balancer to direct incoming traffice to the EC2 web servers
 
+### Containerizing vprofileoncloud
+
+![Container vprofile](/Docker/ContainerizingProject.png)
+- Using DockerHub as source of documentation, I customized Dockerfiles for Tomcat, MySQL, and NGINX
+	- For Tomcat - ensured Docker built an image using a prepared .war file to run as our application page at a specified port; included a volume for persistent data
+	- For MySQL - customized a docker image with personalized password and added pre-set SQL commands for creating the table
+	- For NGINX - simply modified a .conf file to connect with the Tomcat server and listen on port 80
+- Memcached and RabbitMQ were used OOTB, straight from docker hub
+- Using Docker, I was able to create all 5 images and use docker-compose.yml to setup a multi-container application that launches the application in its entirety with docker-compose up command.
+
 ## Not As Interesting, But Fundamentals I Practiced Before Working With The Good Stuff:
 
 ### vagrant-vms
@@ -73,7 +83,7 @@
 - Manually provisioned 5 VMs to represent different services that coupled together
 	1. Nginx - a web service (similar to httpd) to use as a load balancer and route traffic to the Tomcat server
 	2. Apache Tomcat - Java web application service to host the webpage
-	3. RabbitMQ - message broker that we connected to Tomcat (not needed but for practice). Normally it's a queueing agent to connect applications together.
+	3. RabbitMQ - message broker that I connected to Tomcat (not needed but for practice). Normally it's a queueing agent to connect applications together.
 	4. Memcached - database cache that routes information to MySQL server
 	5. MySQL - primary database to retain user information
 - Automated_provisioning - folder containing Vagrantfile that automates creation of all VMs and respective scripts for each of the needed services. Application.properties is the primary file for Tomcat to understand the connective properties between the services. 
