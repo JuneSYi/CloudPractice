@@ -5,8 +5,105 @@
 - main strength are its images
 - A standard unit of software; package software into standardized units for development, shipment, and deployment
 
+### Containerizing project
+
+![Docker Design](DockerfileImage.png)
+
+###### ./ContainerizingProject/
+- We replicated the same setup for ../vprofile-project/ but used Docker for provisioning
+###### ./ContainerizingProject/app/Dockerfile
+- RUN - remove all files from tomcat webaps
+- COPY - copy the war file into the tomcat webapps folder as ROOT.war
+- EXPOSE - we expose the port that tomcat will run on
+- CMD - running catalina.sh will run the tomcat process, it's pre-defined in the tomcat image
+- WORKDIR - setting the directory to tomcat subdirectory
+- VOLUME - attaching any local volume to my host machine directory
+###### ./ContainerizingProject/db/Dockerfile
+- ENV - adding an environment variable for required password and db account name
+- ADD - adding the premade sql file and pushing it into a specific location
+###### ./ContainerizingProject/web/Dockerfile
+- RUN && COPY - we remove the default config file and copy our own built configuration file in the same location
+	- For configuration file nginvproapp.conf, we have the server listen for traffic on port 80 and forward the requests to and upstream server on port 8080, where our tomcat server will be running
+1. Once set, ran maven install on a pom.xml file to get the vprofile-v2.war and set the file within /app/
+2. ran "docker build -t juntheyi/tomcat:V1 ."
+	- building the image and reflecting the same parameters in docker hub repository for junetheyi repo named tomcat and tag of V1. The "." represents the location within current working instance.
+3. same for db and web
+4. used "docker pull memcached" to pull memcached image, we can do this because no customization needed.
+	- same with "docker pull rabbitmq"
+5. Created docker-compose.yml file with some notes on following settings
+	- name of containers falling under services: need to reflect as we had in applications.properties file for db that we used for our pom.xml
+	- for nginx file, needs to reflect same as the customized Dockerfile for web
+	- for db exposed port, we use docker inspect <imageName> to see which port is exposed in the image
+	- for volumes we mapped the mysql db to vprodbdata to not lose our data
+6. docker-compose up
+7. pushed all customized images to dockerhub repo
+
+
+### Docker Compose
+###### ./Dockertest/
+- tool for defining and running multi-container docker applications
+- similar to "vagrant up" you can use "docker-compose up"
+- files are written in .yml
+###### ./Dockertest/Dockerfile
+- uses python alpine image from docker hub
+- WORKDIR /code - where all files will be placed for later cmds to come
+- COPY - we copy the local requirements.txt file into the container (in WORKDIR /code)
+- we run pip install -r requirements.txt
+- COPY . . - is copying everything in the current directory into the container at the specified WORKDIR
+###### ./Dockertest/docker-compose.yml
+- file is self-explanatory, use https://docs.docker.com/compose/gettingstarted/ if you'd like more specific details
+- "docker compose up" to build
+
+### Entrypoint and CMD
+###### example #1
+- FROM ubuntu:latest
+- CMD ["echo", "hello"]
+	- prints hello when you run the image
+###### example #2
+- FROM ubuntu:latest
+- ENTRYPOINT ["echo"]
+	- runs echo, prints an empty line.
+	- user can run the argument in this instance
+	- docker run <imageName> <argument>
+###### example #3
+- FROM ubuntu:latest
+- ENTRYPOINT ["echo"]
+- cmd ["hello"]
+	- prints hello
+	- but, argument can be overwritten here
+	- docker run <imageName> <argument>
+		- prints <argument>
+	- this means it'll have a default argument that can be overwritten
+
 ### Building images
-- 
+- Dockerfile builds images
+###### ./DockerfileImage ([...Image] added for unique id purposes, actual file will need to be labeled Dockerfile)
+- FROM - used to label the base image we want to use
+- LABEL - we add labels such as author and project name
+- ENV - to make the build non interactive we can set it as DEBIAN_FRONTEND=noninteractive 
+	- if any interaction is needed, the build will fail
+- RUN - execute commands we want to run such as downloading required packages
+- CMD - we used exec form, (3 different forms total), which does not invoke a command shell. Thus, we need to express the command as a JSON array and give full path to the executable.
+- EXPOSE - port that the process is running at must be stated
+- WORKDIR - if we attach anything or run any docker exec commands, it'll be running directly from this directory
+- VOLUME - to specify the destination of a volume inside a container
+- ADD - relative path of file to path we want to add it to, add will untar a tar.gz file
+- COPY - just moves the file to file destination
+- docker build -t nanoimg .
+	- build our image with -t as a tag identifier and "." representing the current directory of our Dockerfile
+- Commands
+	- docker run -d --name nanowebsite -p 9080:80 nanoimg
+		- d for background, name for what we call the container, p for specifying localhost port, nanoimg being the image we choose to run
+	- docker build -t <dockerhubRepoName>/<imageName>
+		- to host the file on the docker repository
+	- docker login
+		- to login to docker acct
+	- docker push <dockerhubRepoName>/<imageName>
+		- pushes the image to dockerhub
+- with the docker pushed to the public repo, anyone w/internet access can pull junetheyi/nanoimg to run their own container with nanoimg
+
+
+
 
 ### Docker Volumes
 - Containers are volatile, when you make changes, you have to reboot the image and it restarts. We have volumes for containers where data needs to persist--e.g. databases
@@ -34,7 +131,6 @@
 		- gives you specific information on the container you started
 	- mysql -h <ipOfContainer> -u root -p<password>
 		- gets into mysql container running and execute mysql commands
-
 
 ### Docker Image + Logs
 - A stopped container like vm image
