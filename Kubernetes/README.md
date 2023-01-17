@@ -1,8 +1,59 @@
 # Kubernetes
 #
 
-### Service
+### Config Map & Variables
 -
+
+### Volumes
+###### EBSVolume.yaml
+- Creating an AWS EBS volume
+	- Before using, you need to create
+	- e.g. aws ec2 create-volume --availability-zone=eu-west-1a --size=10 --volume-type=gp2
+- Adding volume configuration (see EBSVolume.yaml)
+	- when you create your pod, the volumeMounts: points to where you want to mount the volume in the container.
+	- volumes: points to what volume you want to use from the host
+
+
+### Command and Arguments
+- if you have CMD and ENTRYPOINT, cmd comes latter
+	- usually entrypoint will be the cmd, and cmd will be the argument
+- key point - containers run the command, containers are inside the pod. we give commands and argument at the container level
+
+### Deployment
+- Deployment controller provides declarative updates for pods and replica sets; declarative = desired state
+- kubectl apply -f <deploymentfile>
+- everything on documentation
+
+
+### Replica Set
+###### replicaset.yaml
+- re-creates pods if they go down
+- copied replicaset.yaml from kubernetes.io documentation
+	- kubectl create -f <yamlfile>
+	- kubectl get rs
+- if changes are made to replica set file you can reapply by:
+	- kubectl apply -f <yamlfile>
+- adhoc command
+	- kubectl scale --replicas=(number) rs/<nameofReplica>
+	- kubectl edit rs <nameOfReplica>
+
+### Services
+###### lbService.yaml
+- key note: service is not a pod or container, it's more similar to rules
+- way to expose an application running on a set of pods as a network service; similar to load balancers
+- NodePort service - similar to port mapping in docker; backend oriented
+	- port numbers start at 30000
+- ClusterIP service - internal communication; e.g. tomcat to mysql
+- LoadBalancer service - to map port to outside; aws will create an actual LB for this
+- created lbService.yaml
+	- Here I created a NodePort service that's connected internally on port 8090, with an external frontend port of 30001, and target port pointing to the vproapp pod (created from firstPod.yaml)
+	- kubectl create -f nodePortService.yaml
+	- kubectl get svc
+		- verify creation and other details
+	- kubectl describe svc <nameOfService>
+		- specific details of service
+	- kubectl describe pod <nameOfPod>
+		- we can see that the svc and pod are mapped to the same endpoints/IP
 
 ### Logging
 - kubectl describe pod <podName>
@@ -100,4 +151,3 @@
 	- Minikube - one node kubernetes cluster for testing/practice
 	- Kubeadm - multi node kubernetes cluster
 	- Kops - Multi node Kubernetes Cluster on AWS/GCP/etc
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
