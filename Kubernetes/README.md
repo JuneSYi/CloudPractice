@@ -2,7 +2,30 @@
 #
 
 ### Config Map & Variables
--
+###### ./config-map/samplecm.yaml
+###### ./config-map/configure-pod.yaml
+- you can store environment variables by categorizing them within the containers section as env:
+	- e.g. store $MYSQL variables for account name and p/w
+- config maps - to store your variables all in one place and inject when you need them into files
+	- declaratively, you just use kind: ConfigMap and then add the metadata and the data
+	- to inject into a pod, you use envFrom: within the container level
+		then add configMapRef: or configMapRef: and then name: + key:
+- samplecm.yaml (sample config map)
+	- metadata shows the name of the config map
+	- has 4 key-values with values tied to assigned variables
+	- for the file-like keys, they can be stored in a container
+- once made, you can apply by "kubectl apply -f <ConfigMap.yaml>"
+	- then "kubectl get cm" to see all config maps
+	- or "kubectl get cm <ConfigMapName.yaml> -o yaml" to see a specific file
+- configure-pod.yaml (application of config map)
+	- we can see how we apply config maps by prompting with env:
+	- valuFrom: -> configMapKeyRef: we store the value of key: player_intial_lives from configMapKeyRef name: game-demo into the environment variable PLAYER_INITIAL_LIVES
+	- same with UI_PROPERTIES_FILE_NAME
+	- volumeMounts:
+		- config map can be mounted to volumes; here it'll be mounted at /config directory
+		- in the volumes section, you see the same name connecting to the volume mount
+		- ConfigMap is used for this volume and keys are labeled
+			- the path: is same but doesn't have to be, it'll be the name used in the volume.
 
 ### Volumes
 ###### EBSVolume.yaml
