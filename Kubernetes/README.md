@@ -1,6 +1,31 @@
 # Kubernetes
 #
 
+### Ingress
+###### Ingress.yaml
+- An API object that manages external access to the services in a cluster, typically HTTP
+- Ingress exposes 80/443 routes from outside the cluster to services within the cluster (think load balancer)
+- Ingress Controller is required; NGINX is common but there are many
+- you apply Ingress with rules: under spec:
+	- identify the host, the path, where you want the service to be routed to
+
+### Secrets
+Opaque Secret
+	- echo -n "secretpass" | base64
+		- shows the encoded value of the password "secretpass" and encodes it in base64
+	- echo 'type output of encoded password' | base64 --decode
+		- decodes it
+	- for declarative, first encode using base64
+		use the value in .yaml file
+	- place secret key in environment variable in config map
+- many different types of secrets in kubernetes documentation page
+- storing docker images in private repo
+	- kubectl create secret docker-registry <name> --docker-email=xxx --docker-...
+	- can decode using base64
+- imagePullSecrets:
+	- Can use when outlining the spec: during your pod .yaml file
+	- pulls from private repo
+
 ### Config Map & Variables
 ###### ./config-map/samplecm.yaml
 ###### ./config-map/configure-pod.yaml
