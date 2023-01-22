@@ -1,6 +1,50 @@
 # Kubernetes
 #
 
+### App Deployment on Kubernetes Cluster
+- What I used:
+    - Kops
+    - containerized apps (vprofile)
+    - Create EBS volume for DB Pod
+    - Label Node with zones names
+    - Write the Kubernetes Defintion files for
+        - Deployment, Service, Secret, Volume
+- Process:
+  1. Setup instructions from 'Setup with Kops' below
+  2. kops create cluster --name=kubekops.jtechdevops.com --state=s3://jytech-kops-state --zones=us-east-1a,us-east-1b --node-count=2 --node-size=t3.small --master-size=t3.medium --dns-zone=kubekops.jtechdevops.com
+  3. kops update cluster --name kubekops.jtechdevops.com --state=s3://jytech-kops-state --yes --admin
+  4. kops validate cluster --state=s3://jytech-kops-state
+  5. Creating an EBS volume
+     1. aws ec2 create-volume --availability-zone=us-east-1a --size=3 --volume-type=gp2
+     2. saved output of volumeId
+     3. To ensure when we run our db pod, it's in the same availability zone. We can do that through nodeSelector option in our definition file.
+     4. Creating our own label but if we wanted to see our own - kubectl get nodes --show-labels
+     5. Getting the node names - kubectl get nodes
+     6. checking which region one of the nodes are in - kubectl describe <enterNodeName> | grep us-east
+     7. kubectl label nodes <sameNodeName> zone=<sameRegion>
+     8. label the other node with the other region
+  - Stopping here; continuing learning with CKAD training
+
+### Setup with Kops
+- kubekops.jtechdevops.com
+- ec2 instance
+    - genereated ssh key, installed awscli, inserted iam key and password into cli, installed kubectl, gave it write privileges, installed kops, gave write privileges, moved both kops and kubectl to /usr/local/bin
+        - moving to /usr/local/bin makes it accessible anywhere to local user
+- iam user
+- s3 - going to store the state of kops. we can run our commands from anywhere as long as we store it in our bucket
+    - jytech-kops-state
+- route53 - added nameserver record from route 53 to domain
+    - registers with domain
+- to check: nslookup -type=ns kubekops.jtechdevops.com
+- Commands:
+    - for configuration for cluster and store in s3 bucket
+        - kops create cluster --name=kubekops.jtechdevops.com --state=s3://jytech-kops-state --zones=us-east-1a,us-east-1b --node-count=2 --node-size=t3.small --master-size=t3.medium --dns-zone=kubekops.jtechdevops.com --node-volume-size=8 --master-volume-size=8
+    - final config portion - key to always add --state and specify s3 bucket
+        - kops update cluster --name kubekops.jtechdevops.com --state=s3://jytech-kops-state --yes --admin
+    - to validate: kops validate cluster --state=s3://jytech-kops-state
+    - to delete: kops delete cluster --name kubekops.jtechdevops.com --state=s3://jytech-kops-state --yes
+    - sudo poweroff
+ 
 ### Taints, Tolerations, Jobs, DaemonSet
 - Taints - allow a node to repel a set of pods
 - Tolerations - applied to pods and allow (but do not require) the pods to schedule onto nodes with matching tains
@@ -23,7 +67,7 @@
 note: '-o' is output
 
 ### Ingress
-###### Ingress.yaml
+###### ./PracticeYaml/Ingress.yaml
 - An API object that manages external access to the services in a cluster, typically HTTP
 - Ingress exposes 80/443 routes from outside the cluster to services within the cluster (think load balancer)
 - Ingress Controller is required; NGINX is common but there are many
@@ -74,7 +118,7 @@ Opaque Secret
 			- the path: is same but doesn't have to be, it'll be the name used in the volume.
 
 ### Volumes
-###### EBSVolume.yaml
+###### ./PracticeYaml/EBSVolume.yaml
 - Creating an AWS EBS volume
 	- Before using, you need to create
 	- e.g. aws ec2 create-volume --availability-zone=eu-west-1a --size=10 --volume-type=gp2
@@ -95,7 +139,7 @@ Opaque Secret
 
 
 ### Replica Set
-###### replicaset.yaml
+###### ./PracticeYaml/replicaset.yaml
 - re-creates pods if they go down
 - copied replicaset.yaml from kubernetes.io documentation
 	- kubectl create -f <yamlfile>
@@ -107,7 +151,7 @@ Opaque Secret
 	- kubectl edit rs <nameOfReplica>
 
 ### Services
-###### lbService.yaml
+###### ./PracticeYaml/lbService.yaml
 - key note: service is not a pod or container, it's more similar to rules
 - way to expose an application running on a set of pods as a network service; similar to load balancers
 - NodePort service - similar to port mapping in docker; backend oriented
@@ -130,7 +174,7 @@ Opaque Secret
 	- shows you the output of the process that the pod is trying to run
 
 ### Pods
-###### ./firstPod.yaml
+###### ./PracticeYaml/firstPod.yaml
 - smallest unit in k8s object, represents processes running on your cluster
 - most common usage is running a single container per pod
 - K8s manages pods rather than containers directly
@@ -170,27 +214,6 @@ Opaque Secret
 	- config map - to store variables and configuration
 	- secret - more storing of information
 	- volumes - we can have different kind of volumes attached to pods
-
-### Setup with Kops
-- kubekops.jtechdevops.com
-- ec2 instance
-	- genereated ssh key, installed awscli, inserted iam key and password into cli, installed kubectl, gave it write privileges, installed kops, gave write privileges, moved both kops and kubectl to /usr/local/bin
-		- moving to /usr/local/bin makes it accessible anywhere to local user
-- iam user
-- s3 - going to store the state of kops. we can run our commands from anywhere as long as we store it in our bucket
-	- jytech-kops-state
-- route53 - added nameserver record from route 53 to domain
-	- registers with domain
-- to check: nslookup -type=ns kubekops.jtechdevops.com
-- Commands:
-	- for configuration for cluster and store in s3 bucket
-		- kops create cluster --name=kubekops.jtechdevops.com --state=s3://jytech-kops-state --zones=us-east-1a,us-east-1b --node-count=2 --node-size=t3.small --master-size=t3.medium --dns-zone=kubekops.jtechdevops.com --node-volume-size=8 --master-volume-size=8
-	- final config portion - key to always add --state and specify s3 bucket
-		- kops update cluster --name kubekops.jtechdevops.com --state=s3://jytech-kops-state --yes --admin
-	- to validate: kops validate cluster --state=s3://jytech-kops-state
-	- to delete: kops delete cluster --name kubekops.jtechdevops.com --state=s3://jytech-kops-state --yes
-	- sudo poweroff
-
 
 ### Introduction Notes
 - Master Node: 
