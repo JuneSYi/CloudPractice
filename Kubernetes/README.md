@@ -1,6 +1,27 @@
 # Kubernetes
 #
 
+### Taints, Tolerations, Jobs, DaemonSet
+- Taints - allow a node to repel a set of pods
+- Tolerations - applied to pods and allow (but do not require) the pods to schedule onto nodes with matching tains
+- Taints and tolerations work together to ensure that pods are not scheduled onto inappropriate nodes. One or more taints are applied to a node; this marks that the node should not accept any pods that do not tolerate the taints
+- e.g. kubectl tain nodes node1 key1=value1:NoSchedule
+	-places a tain on node node1. The taint has key key1, value value1, and taint effect, NoSchedule. This means that no pod will be able to schedule onto node1 unless it has matching toleration
+- you specify a toleration for a pod in the PodSpec
+- Jobs - creates one or more pods and will continue to retry execution of the pods until a specified number of them successfuly complete/end. Jobs track the successful completions and when a specified number is reached, the job is complete.
+	- could be a script/batch process
+	- similar to pods but pods run continuously where jobs will end at some point
+- CronJob - similar to Job, can use to schedule periodic jobs
+- DaemonSet - ensures that all Nodes run a copy of a Pod. As nodes are added to the cluster, pods are added to them.
+
+### Kubectl CLI
+- kubectl run <name> --image=<containerimage> --dry-run=client -o yaml > <name.yaml>
+	- produces a .yaml file with a template for running a specified container
+- kubectl create deployment --image=nginx nginx --dry-run=client -o yaml > <filename.yaml>
+	- this will create a deployment template in a .yaml file.
+- ultimately, you can always just go to the documentation to pull a template but this is a neat shortcut
+note: '-o' is output
+
 ### Ingress
 ###### Ingress.yaml
 - An API object that manages external access to the services in a cluster, typically HTTP
