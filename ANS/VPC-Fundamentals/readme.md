@@ -1,3 +1,5 @@
+# VPC Fundamentals
+#
 VPC Addressing (CIDR)
 	• private address space, so without an internet gateway, no traffic to the world.
 	• one AWS account can span multiple regions
